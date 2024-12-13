@@ -10,7 +10,7 @@ userRouter.get('/logout',auth,logoutController)
 
 userRouter.put('/update-user',auth,updateUserDetails)
 userRouter.put('/forgot-password',forgotPasswordController)
-userRouter.put('/verify-forget-password-otp',verifyForgotPasswordOtp)
+userRouter.put('/verify-forgot-password-otp',verifyForgotPasswordOtp)
 userRouter.put('/reset-password',resetpassword)
 userRouter.post('/refresh-token',refreshToken)
 

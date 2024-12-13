@@ -6,6 +6,7 @@ import Axios from '../utilis/Axios';
 import SummaryApi from '../common/SummaryApp';
 import { Link,useNavigate } from 'react-router-dom';
 import AxiosToastError from '../utilis/AxiosToastError';
+
 const Login = () => {
 
     const [data,setData] = useState({
@@ -27,15 +28,14 @@ const Login = () => {
         })
     }
  
-    const validValue =  data.name && data.email && data.password && data.confirmPassword;
-
+    const validValue =  data.email && data.password; // Ensure email and password are provided
     const handleSubmit =async(e) =>{
         e.preventDefault()
     
         try {
             const response = await Axios({
                 ...SummaryApi.login,
-                data: data // You may also need to pass the form data
+                data: {email : data.email, password : data.password} // Send only necessary fields
             })
             
             if(response.data.error){
@@ -44,6 +44,8 @@ const Login = () => {
 
             if(response.data.success){
                 toast.success(response.data.message)
+                localStorage.setItem('accesstoken',response.data.data.accesstoken)
+                localStorage.setItem('refreshtoken',response.data.data.refreshtoken)
                 setData ({
                     email : "",
                     password : ""
@@ -63,7 +65,13 @@ const Login = () => {
                 <form className='grid gap-4 ' onSubmit={handleSubmit}  >
                     <div className='grid'>
                         <label htmlFor='email'>Email</label>
-                        <input type='email' placeholder='Enter your email' name='email' onChange={handleChange} className='bg-blue-50 p-2 border rounded outline-none focus:border-blue-500' value={data.email}/>
+                        <input type='email' 
+                        placeholder='Enter your email' 
+                        name='email'
+                        onChange={handleChange} 
+                        className='bg-blue-50 p-2 border rounded outline-none focus:border-blue-500' 
+                        value={data.email}
+                        required autoComplete='email'/>
                     </div>
                     <div className='grid gap-1'>
                         <label htmlFor='password'>Password</label>
@@ -74,9 +82,12 @@ const Login = () => {
                                 placeholder='Enter your password'
                                 onChange={handleChange} 
                                 className='w-full outline-none' 
-                                value={data.password}/>
+                                value={data.password}
+                                required
+                                autoComplete='password'/>
                         
-                        <div onClick={()=> setShowPassword(prev => !prev)} className='cursor-pointer absolute right-3 top-3'>
+                        <div onClick={()=> setShowPassword(prev => !prev)}
+                         className='cursor-pointer absolute right-3 top-3'>
                          {
                             showPassword ? <FaEye/> : <FaRegEyeSlash/>
                          }  

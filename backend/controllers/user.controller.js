@@ -332,7 +332,7 @@ export async function verifyForgotPasswordOtp(request,response){
             })
         }
 
-//if otp isnot expired or otp ===user.forget_password_otp
+//if otp isnot expired or otp ===user.forgot_password_otp
 
         return response.json({
             message : "Verify OTP successfully",

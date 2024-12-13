@@ -13,7 +13,16 @@ const SummaryApi = {
     forgot_password :{
         url : '/api/user/forgot-password',
         method : 'put'
+    },
+    resetPassword : {
+            url : '/api/user/reset-password',
+            method : 'put'
+    },
+    refreshToken : {
+        url : '/api/user/refresh-token',
+        method : 'post'
     }
+    
 }
 
 export default SummaryApi
