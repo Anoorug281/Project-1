@@ -13,8 +13,11 @@ const userSchema = new mongoose.Schema({
     password : {
         type : String,
         required : [true,"Provide password"]
-        },
-        
+    },
+    avatar : {
+        type : String,
+        default : ""
+    },
     mobile : {
         type : Number,
         default : null

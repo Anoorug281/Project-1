@@ -1,3 +1,4 @@
+import { logout, setUserDetails } from "../redux store/userSlice"
 
 export const baseURL = "http://localhost:9000"
 
@@ -21,8 +22,39 @@ const SummaryApi = {
     refreshToken : {
         url : '/api/user/refresh-token',
         method : 'post'
+    },
+    userDetails : {
+        url : '/api/user/user-details',
+        method : 'get'
+    },
+    logout : {
+        url : '/api/user/logout',
+        method : 'get'
+    },
+    uploadAvatar : {
+        url : "/api/user/upload-avatar",
+        method : 'put'
+    },
+    updateUserDetails : {
+        url : '/api/user/update-user',
+        method : 'put'
+    },
+    addCategory : {
+        url : '/api/category/add-category',
+        method : 'post'
+    },
+    uploadImage : {
+        url : '/api/file/upload',
+        method : 'post'
+    },
+    getCategory : {
+        url : '/api/category/get',
+        method : 'get'
+    },
+    updateCategory : {
+        url : '/api/category/update',
+        method : 'put'
     }
-    
 }
 
 export default SummaryApi

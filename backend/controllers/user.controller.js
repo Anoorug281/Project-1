@@ -4,6 +4,7 @@ import bcryptjs from 'bcryptjs'
 import verifyEmailTemplate from "../utils/verifyEmailTemplate.js"
 import generatedAccessToken from "../utils/generatedAccessToken.js"
 import generatedRefreshToken from "../utils/generatedRefreshToken.js"
+import uploadImageCloudinary from "../utils/uploadimageCloudinary.js"
 import generateOtp from "../utils/generateOtp.js"
 import forgotPasswordTemplate from "../utils/forgetPasswordTemplate.js"
 import jwt from 'jsonwebtoken'
@@ -146,6 +147,10 @@ export async function loginController(request,response) {
         const accesstoken = await generatedAccessToken(user._id)
         const refreshToken = await generatedRefreshToken(user._id)
 
+        const updateUser = await UserModel.findByIdAndUpdate(user?._id,{
+            last_login_date : new Date()
+        })
+
         const cookiesOption = {
             httpOnly : true,
             secure : true,
@@ -207,6 +212,35 @@ export async function logoutController(request,response){
     }
 }
 
+//upload user avatar
+export async function uploadAvatar(request,response){
+    try {
+        const userId = request.userId //auth middleware
+        const image = request.file //multer middleware
+        
+        const upload = await uploadImageCloudinary(image)
+       
+        const updateUser = await UserModel.findByIdAndUpdate(userId,{
+            avatar : upload.url
+        })
+
+        return response.json({
+            message : "upload profile",
+            data : {
+                _id : userId,
+                avatar : upload.url
+            }
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message : error.message || error,
+            error : true,
+            success : false
+        })
+    }
+    
+}
+
 //update user details
 export async function updateUserDetails(request,response) {
     try {
@@ -228,7 +262,7 @@ export async function updateUserDetails(request,response) {
         })
 
         return response.json({
-            message : "Updated User Successfully",
+            message : "Updated Successfully",
             error : false,
             success : true,
             data : updateUser
@@ -334,6 +368,11 @@ export async function verifyForgotPasswordOtp(request,response){
 
 //if otp isnot expired or otp ===user.forgot_password_otp
 
+        const updateUser = await UserModel.findByIdAndUpdate(user?._id,{
+            forgot_password_otp : "",
+            forget_password_expiry : ""
+        })
+
         return response.json({
             message : "Verify OTP successfully",
             error : false,
@@ -405,7 +444,7 @@ export async function resetpassword(request,response){
 export async function refreshToken(request,response){
     try {
         
-        const refreshToken = request.cookies.refreshToken || request?.header?.
+        const refreshToken = request.cookies.refreshToken || request?.headers?.
         authorization?.split(" ")[1] // [ bearer token ]
         
         if(!refreshToken){
@@ -455,4 +494,27 @@ export async function refreshToken(request,response){
             success : false
         })
     }
+}
+
+//get login user details
+export async function userDetails(request,response) {
+    try {
+        const userId = request.userId
+        
+        const user = await UserModel.findById(userId).select('-password -refresh_token')
+
+        return response.json({
+            message : 'user details',
+            data : user,
+            error : false,
+            success : true
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message : "Something is wrong",
+            error : true,
+            success : false
+        })
+    }
+    
 }

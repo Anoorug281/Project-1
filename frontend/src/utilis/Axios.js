@@ -44,7 +44,7 @@ Axios.interceptors.request.use(
 
         return Promise.reject(error)
     })
-    const refreshAccessToken = async(refreshToken){
+    const refreshAccessToken = async(refreshToken)=>{
         try {
             const response = await Axios({
                 ...SummaryApi.refreshToken,
